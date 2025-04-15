@@ -1,12 +1,13 @@
 {
-    "compilerOptions": {
+  "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
     "pretty": true,
     "sourceMap": false,
-    "target": "ESNext",
+    "target": "ES2016",
     "outDir": "./dist",
-    "baseUrl": "./src",
+    "rootDir": "./src",
+    // "baseUrl": "./src",
     "noImplicitAny": false,
     "esModuleInterop": true,
     "removeComments": true,
@@ -17,8 +18,8 @@
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "skipLibCheck": true
-    },
-    "include": ["src/**/*.ts", "src/**/*.json"],
-    "exclude": ["node_modules"],
-    "files": ["node_modules/@types/node/index.d.ts"]
-    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.json"],
+  "exclude": ["node_modules"],
+  "files": ["node_modules/@types/node/index.d.ts"]
+}
