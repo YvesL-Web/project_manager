@@ -1,0 +1,11 @@
+{
+  "port": 12345,
+  "db_config": {
+    "db": "",
+    "username": "",
+    "password": "",
+    "host": "",
+    "port": 12345,
+    "dbname": ""
+  }
+}
