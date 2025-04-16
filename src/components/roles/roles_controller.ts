@@ -11,9 +11,13 @@ export class RoleController extends BaseController {
     res.status(result.statusCode).json(result);
     return;
   }
-  public getAllHandler(req: Request, res: Response) {}
+  public async getAllHandler(req: Request, res: Response): Promise<void> {
+    const service = new RolesService();
+    const result = await service.findAll(req.query);
+    res.status(result.statusCode).json(result);
+  }
   public async getOneHandler(req: Request, res: Response) {}
-  public getDetailsHandler(req: Request, res: Response) {}
+  public async getDetailsHandler(req: Request, res: Response) {}
   public async updateHandler(req: Request, res: Response) {}
   public async deleteHandler(req: Request, res: Response) {}
 }
