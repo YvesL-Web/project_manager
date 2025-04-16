@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-
-import { Users } from '../users/user_entity';
+import { Users } from '../users/users_entity';
 import { Projects } from '../projects/projects_entity';
 
 export enum Status {

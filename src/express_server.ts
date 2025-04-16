@@ -1,6 +1,7 @@
-import express, { Express } from 'express';
+import express from 'express';
 import * as config from '../server_config.json';
-import { IServerConfig } from 'utils/config';
+import { IServerConfig } from './utils/config';
+import { Routes } from './routes';
 
 export class ExpressServer {
   private static server = null;
@@ -9,10 +10,17 @@ export class ExpressServer {
     const port = this.server_config.port ?? 3000;
     // Initialize express app
     const app = express();
+    app.use(express.urlencoded({ extended: false }));
+    app.use(express.json());
 
     app.get('/ping', (req, res) => {
       res.send('pong');
     });
+
+    const routes = new Routes(app);
+    if (routes) {
+      console.log('Server Routes started for server');
+    }
 
     ExpressServer.server = app.listen(port, () => {
       console.log(`Server is running on port ${port} with pid = ${process.pid}`);
