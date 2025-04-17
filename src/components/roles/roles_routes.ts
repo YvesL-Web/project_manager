@@ -2,6 +2,7 @@ import { Express } from 'express';
 import { RoleController, RolesUtil } from './roles_controller';
 import { validate } from '../../middlewares/validator';
 import { body, param } from 'express-validator';
+import { authorize } from '../../middlewares/auth_middleware';
 
 const validRoleInput = [
   body('name').trim().notEmpty().withMessage('name is required'),
@@ -25,11 +26,11 @@ export class RoleRoutes {
   private baseEndpoint = '/api/roles';
   constructor(app: Express) {
     const controller = new RoleController();
-    app.route(this.baseEndpoint).get(controller.getAllHandler).post(validate(validRoleInput), controller.addHandler);
+    app.route(this.baseEndpoint).all(authorize).get(controller.getAllHandler).post(validate(validRoleInput), controller.addHandler);
     app
       .route(this.baseEndpoint + '/:id')
+      .all(authorize)
       .get(validate(validGetOneInput), controller.getOneHandler)
-      .get(controller.getDetailsHandler)
       .put(validate(validRoleInput), controller.updateHandler)
       .delete(controller.deleteHandler);
   }

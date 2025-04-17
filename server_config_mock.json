@@ -7,5 +7,15 @@
     "host": "",
     "port": 12345,
     "dbname": ""
+  },
+  "email_config": {
+    "from": "",
+    "user": "",
+    "password": ""
+  },
+  "front_app_url": "",
+  "default_user": {
+    "email": "",
+    "password": ""
   }
 }
