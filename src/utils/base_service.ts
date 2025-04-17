@@ -121,7 +121,7 @@ export class BaseService<T> {
    * @param {object} queryParams - The query parameters to filter the entities.
    * @returns {Promise<ApiResponse<T[]>>} - An ApiResponse with an array of retrieved entities or an error message.
    */
-  async findAll(queryParams: object): Promise<ApiResponse<T[]>> {
+  async findAll(queryParams: Record<string, any>): Promise<ApiResponse<T[]>> {
     try {
       let data = [];
       if (Object.keys(queryParams).length > 0) {

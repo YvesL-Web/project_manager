@@ -10,9 +10,9 @@ export class Roles {
     unique: true
   })
   name: string;
-  @Column({ length: 200 })
+  @Column({ length: 200, nullable: true })
   description: string;
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   rights: string;
   @CreateDateColumn()
   created_at: Date;

@@ -1,7 +1,7 @@
 import { Express } from 'express';
 import { RoleController, RolesUtil } from './roles_controller';
 import { validate } from '../../middlewares/validator';
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 
 const validRoleInput = [
   body('name').trim().notEmpty().withMessage('name is required'),
@@ -19,6 +19,8 @@ const validRoleInput = [
   })
 ];
 
+const validGetOneInput = [param('id').isUUID().withMessage('The ID must be a valid UUID')];
+
 export class RoleRoutes {
   private baseEndpoint = '/api/roles';
   constructor(app: Express) {
@@ -26,6 +28,7 @@ export class RoleRoutes {
     app.route(this.baseEndpoint).get(controller.getAllHandler).post(validate(validRoleInput), controller.addHandler);
     app
       .route(this.baseEndpoint + '/:id')
+      .get(validate(validGetOneInput), controller.getOneHandler)
       .get(controller.getDetailsHandler)
       .put(validate(validRoleInput), controller.updateHandler)
       .delete(controller.deleteHandler);

@@ -25,6 +25,7 @@ Thumbs.db
 
 # Ignore server configuration
 server_config.json
+other_main.ts
 
 # prettier conf
 .prettierrc
