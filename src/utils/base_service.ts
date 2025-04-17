@@ -168,7 +168,9 @@ export class BaseService<T> {
    */
   async findByIds(ids: string[]): Promise<ApiResponse<T[]>> {
     try {
+      // Get the primary key column name from the metadata
       const primaryKey: string = this.repository.metadata.primaryColumns[0].databaseName;
+      // Query the database to retrieve records with the specified IDs
       const data = await this.repository.createQueryBuilder().where(`${primaryKey} IN (:...ids)`, { ids: ids }).getMany();
       return { statusCode: 200, status: 'success', data: data };
     } catch (error) {

@@ -56,4 +56,12 @@ export class RolesUtil {
     // Return the collected permissions
     return permissions;
   }
+
+  public static async checkValidRoleIds(role_ids: string[]) {
+    const roleService = new RolesService();
+    // Query the database to check if all role_ids are valid
+    const roles = await roleService.findByIds(role_ids);
+    // Check if all role_ids are found in the database
+    return roles.data.length === role_ids.length;
+  }
 }
