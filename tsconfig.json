@@ -1,25 +1,32 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "pretty": true,
-    "sourceMap": false,
-    "target": "ES2016",
-    "outDir": "./dist",
-    "rootDir": "./src",
-    // "baseUrl": "./src",
-    "noImplicitAny": false,
-    "esModuleInterop": true,
-    "removeComments": true,
-    "preserveConstEnums": true,
-    "experimentalDecorators": true,
-    "alwaysStrict": true,
-    "forceConsistentCasingInFileNames": true,
-    "emitDecoratorMetadata": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true
+    "module": "commonjs", // Utilisation du module CommonJS pour Node.js
+    "moduleResolution": "node", // Résolution des modules pour Node.js
+    "pretty": true, // Affichage des erreurs de compilation de manière lisible
+    "sourceMap": false, // Désactive la génération des fichiers source map
+    "target": "ES2016", // Cible ES2016 pour la compatibilité avec Node.js
+    "outDir": "./dist", // Dossier de sortie des fichiers compilés
+    "rootDir": "./src", // Dossier racine des fichiers source
+    "noImplicitAny": false, // Désactive l'erreur pour les types implicites "any"
+    "esModuleInterop": true, // Permet l'importation des modules CommonJS
+    "removeComments": true, // Supprime les commentaires dans les fichiers compilés
+    "preserveConstEnums": true, // Préserve les énumérations constantes
+    "experimentalDecorators": true, // Active les décorateurs expérimentaux
+    "emitDecoratorMetadata": true, // Génère des métadonnées pour les décorateurs
+    "alwaysStrict": true, // Active le mode strict dans tous les fichiers
+    "forceConsistentCasingInFileNames": true, // Force la cohérence de la casse dans les noms de fichiers
+    "resolveJsonModule": true, // Permet l'importation des fichiers JSON
+    "skipLibCheck": true, // Ignore les vérifications des types dans les fichiers de bibliothèque
+    "typeRoots": ["./node_modules/@types", "./src/types"], // Inclut les types personnalisés
+    "types": ["node", "express"] // Charge les types pour Node.js et Express
   },
-  "include": ["src/**/*.ts", "src/**/*.json"],
-  "exclude": ["node_modules"],
-  "files": ["node_modules/@types/node/index.d.ts"]
+  "include": [
+    "src/**/*.ts", // Inclut tous les fichiers TypeScript dans le dossier src
+    "src/**/*.json", // Inclut tous les fichiers JSON dans le dossier src
+    "src/types" // Inclut le dossier contenant les types personnalisés
+  ],
+  "exclude": [
+    "node_modules", // Exclut le dossier node_modules
+    "dist" // Exclut le dossier de sortie des fichiers compilés
+  ]
 }

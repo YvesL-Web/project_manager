@@ -2,31 +2,75 @@ import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { BaseController } from '../../utils/base_controller';
 import { UsersService } from './users_service';
-import { bcryptCompare, SERVER_CONST } from '../../utils/common';
+import { bcryptCompare, encryptString, SERVER_CONST } from '../../utils/common';
 import { hasPermission } from '../../utils/auth_util';
+import { RolesUtil } from '../roles/roles_controller';
 
 export class UserController extends BaseController {
   public async addHandler(req: Request, res: Response): Promise<void> {
     if (!hasPermission(req.user.rights, 'add_user')) {
-      res.status(403).json({
-        statusCode: 403,
-        status: 'error',
-        message: 'Unauthorized'
-      });
+      res.status(403).json({ statusCode: 403, status: 'error', message: 'Unauthorised' });
       return;
     }
+
+    try {
+      // Create an instance of the UsersService
+      const service = new UsersService();
+
+      // Extract user data from the request body
+      const user = req.body;
+
+      // Check if the provided role_ids are valid
+      const isValidRole = await RolesUtil.checkValidRoleIds(user.role_ids);
+
+      if (!isValidRole) {
+        // If role_ids are invalid, send an error response
+        res.status(400).json({ statusCode: 400, status: 'error', message: 'Invalid role_ids' });
+        return;
+      }
+      // Convert email and username to lowercase (if present)
+      user.email = user.email?.toLowerCase();
+      user.username = user.username?.toLowerCase();
+
+      // Encrypt the user's password
+      user.password = await encryptString(user.password);
+
+      // If role_ids are valid, create the user
+      const createdUser = await service.create(user);
+      res.status(createdUser.statusCode).json(createdUser);
+    } catch (error) {
+      // Handle errors and send an appropriate response
+      console.error(`Error while addUser => ${error.message}`);
+      res.status(500).json({ statusCode: 500, status: 'error', message: 'Internal server error' });
+    }
   }
+
   public async getAllHandler(req: Request, res: Response): Promise<void> {
     if (!hasPermission(req.user.rights, 'get_all_users')) {
       res.status(403).json({ statusCode: 403, status: 'error', message: 'Unauthorized' });
       return;
     }
+    const service = new UsersService();
+    const result = await service.findAll(req.query);
+    if (result.statusCode === 200) {
+      // Remove password field to send in response
+      result.data.forEach((i) => delete i.password);
+    }
+    res.status(result.statusCode).json(result);
+    return;
   }
   public async getOneHandler(req: Request, res: Response): Promise<void> {
     if (!hasPermission(req.user.rights, 'get_details_user')) {
       res.status(403).json({ statusCode: 403, status: 'error', message: 'Unauthorized' });
       return;
     }
+    const service = new UsersService();
+    const result = await service.findOne(req.params.id);
+    if (result.statusCode === 200) {
+      delete result.data.password;
+    }
+    res.status(result.statusCode).json(result);
+    return;
   }
 
   public async updateHandler(req: Request, res: Response): Promise<void> {
@@ -34,12 +78,30 @@ export class UserController extends BaseController {
       res.status(403).json({ statusCode: 403, status: 'error', message: 'Unauthorized' });
       return;
     }
+    const service = new UsersService();
+    const user = req.body;
+    // we will not update email and username once inserted so remove it from body
+    delete user?.email;
+    delete user?.username;
+    // we will also not update password from here it will be from changePassword function separate
+    delete user?.password;
+
+    const result = await service.update(req.params.id, user);
+    if (result.statusCode === 200) {
+      delete result.data.password;
+    }
+    res.status(result.statusCode).json(result);
+    return;
   }
+
   public async deleteHandler(req: Request, res: Response): Promise<void> {
     if (!hasPermission(req.user.rights, 'delete_user')) {
       res.status(403).json({ statusCode: 403, status: 'error', message: 'Unauthorized' });
       return;
     }
+    const service = new UsersService();
+    const result = await service.delete(req.params.id);
+    res.status(result.statusCode).json(result);
   }
 
   public async login(req: Request, res: Response): Promise<void> {
@@ -85,6 +147,42 @@ export class UserController extends BaseController {
           refreshToken
         }
       });
+      return;
+    }
+  }
+
+  public async changePassword(req: Request, res: Response): Promise<void> {
+    const { oldPassword, newPassword } = req.body;
+    const service = new UsersService();
+    const findUserResult = await service.findOne(req.params.id);
+    if (findUserResult.statusCode !== 200) {
+      res.status(404).json({
+        statusCode: 404,
+        status: 'error',
+        message: 'User Not Found'
+      });
+      return;
+    }
+    const user = findUserResult.data;
+    // check requested user_id and session user_id is same
+    if (user?.username !== req.user.username) {
+      res.status(401).json({ statusCode: 401, status: 'error', message: 'You are not authorized to do that.' });
+      return;
+    }
+    // verify old password is valid
+    const comparePasswords = await bcryptCompare(oldPassword, user.password);
+    if (!comparePasswords) {
+      res.status(400).json({ statusCode: 400, status: 'error', message: 'Incorrect old password.' });
+      return;
+    }
+    // Encrypt the user's new password
+    user.password = await encryptString(newPassword);
+    const result = await service.update(req.params.id, user);
+    if (result.statusCode === 200) {
+      res.status(200).json({ statusCode: 200, status: 'success', message: 'Password updated successfully' });
+      return;
+    } else {
+      res.status(result.statusCode).json(result);
       return;
     }
   }

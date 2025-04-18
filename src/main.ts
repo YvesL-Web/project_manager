@@ -1,6 +1,7 @@
 import cluster from 'cluster';
 import { ExpressServer } from './express_server';
 import { DatabaseUtil } from './utils/db';
+import { DDLUtil } from './utils/ddl_util';
 
 // connect the express server
 const server = new ExpressServer();

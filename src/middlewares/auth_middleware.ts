@@ -5,6 +5,45 @@ import { RolesUtil } from '../components/roles/roles_controller';
 import { NextFunction, Request, Response } from 'express';
 import { Users } from '../components/users/users_entity';
 
+declare global {
+  namespace Express {
+    /**
+     * Extends the Express `Request` interface to include a `user` property.
+     */
+    interface Request {
+      /**
+       * Custom `user` property to store user-related information.
+       * This property is optional and may not always be present on the request object.
+       */
+      user?: {
+        /**
+         * The username of the authenticated user.
+         * @type {string | undefined}
+         */
+        username?: string;
+
+        /**
+         * The email address of the authenticated user.
+         * @type {string | undefined}
+         */
+        email?: string;
+
+        /**
+         * An array of rights or permissions assigned to the user.
+         * @type {string[] | undefined}
+         */
+        rights?: string[];
+
+        /**
+         * The unique identifier of the authenticated user.
+         * @type {string | undefined}
+         */
+        user_id?: string;
+      };
+    }
+  }
+}
+
 export const authorize = async (req: Request, res: Response, next: NextFunction) => {
   // Get the access token from the request headers
   const token = req.headers?.authorization ? (req.headers?.authorization?.split('Bearer ')[1] as string) : null;
