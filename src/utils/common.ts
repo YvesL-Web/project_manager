@@ -70,6 +70,6 @@ export const bcryptCompare = async (s, hash) => {
 
 export const SERVER_CONST = {
   JWTSECRET: process.env.JWTSECRET,
-  ACCESS_TOKEN_EXPIRY_TIME_SECONDS: 1 * 8 * 60 * 60, // 8 hours
-  REFRESH_TOKEN_EXPIRY_TIME_SECONDS: 5 * 7 * 24 * 60 * 60 // one week
+  ACCESS_TOKEN_EXPIRY_TIME_SECONDS: 60 * 60 * 1000, // 1 hour
+  REFRESH_TOKEN_EXPIRY_TIME_SECONDS: 7 * 24 * 60 * 60 * 1000 // 7 days
 };

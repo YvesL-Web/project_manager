@@ -1,5 +1,6 @@
 import express from 'express';
 import * as config from '../server_config.json';
+import cookieParser from 'cookie-parser';
 import { IServerConfig } from './utils/config';
 import { Routes } from './routes';
 
@@ -11,7 +12,9 @@ export class ExpressServer {
     // Initialize express app
     const app = express();
     app.use(express.urlencoded({ extended: false }));
+
     app.use(express.json());
+    app.use(cookieParser());
 
     app.get('/ping', (req, res) => {
       res.send('pong');

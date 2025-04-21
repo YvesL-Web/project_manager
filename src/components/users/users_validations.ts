@@ -39,3 +39,21 @@ export const validChangePassword = [
     .withMessage('password should contain at least 1 lowercase letter, 1 uppercase letter, 1 special symbol, and 1 number'),
   body('role_ids')
 ];
+
+export const emailValidation = [
+  body('email')
+    .notEmpty()
+    .withMessage('email is required')
+    .bail() // stop validation if notEmpty fails
+    .isEmail()
+    .withMessage('invalid email')
+];
+
+export const validResetPassword = [
+  body('token').trim().notEmpty().withMessage('token is required'),
+  body('newPassword')
+    .isLength({ min: 6 })
+    .withMessage('password is required and should be at least 6 characters long')
+    .isStrongPassword({ minLowercase: 1, minUppercase: 1, minSymbols: 1, minNumbers: 1 })
+    .withMessage('password should contain at least 1 lowercase letter, 1 uppercase letter, 1 special symbol, and 1 number')
+];
