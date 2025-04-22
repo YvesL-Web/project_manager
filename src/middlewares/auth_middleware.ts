@@ -1,9 +1,9 @@
 import * as jwt from 'jsonwebtoken';
 import { SERVER_CONST } from '../utils/common';
-import { UsersUtil } from '../components/users/users_controller';
-import { RolesUtil } from '../components/roles/roles_controller';
 import { NextFunction, Request, Response } from 'express';
 import { Users } from '../components/users/users_entity';
+import { UsersUtil } from '../components/users/users_util';
+import { RolesUtil } from '../components/roles/roles_util';
 
 declare global {
   namespace Express {

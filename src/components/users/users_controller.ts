@@ -4,21 +4,21 @@ import { BaseController } from '../../utils/base_controller';
 import { UsersService } from './users_service';
 import { bcryptCompare, encryptString, SERVER_CONST } from '../../utils/common';
 import { hasPermission } from '../../utils/auth_util';
-import { RolesUtil } from '../roles/roles_controller';
 import { Users } from './users_entity';
 import * as config from '../../../server_config.json';
 import { IServerConfig } from '../../utils/config';
 import { sendPasswordResetEmail } from '../../mailtrap/emails';
+import { UsersUtil } from './users_util';
+import { RolesUtil } from '../roles/roles_util';
 
 const conf: IServerConfig = config;
 
 export class UserController extends BaseController {
   public async addHandler(req: Request, res: Response): Promise<void> {
     if (!hasPermission(req.user.rights, 'add_user')) {
-      res.status(403).json({ statusCode: 403, status: 'error', message: 'Unauthorised' });
+      res.status(403).json({ statusCode: 403, status: 'error', message: 'Unauthorized' });
       return;
     }
-
     try {
       // Create an instance of the UsersService
       const service = new UsersService();
@@ -294,38 +294,6 @@ export class UserController extends BaseController {
       console.error(`Error while refreshing access token => ${error.message}`);
       res.status(403).json({ statusCode: 403, status: 'error', message: 'Invalid or Expired Refresh Token' });
       return;
-    }
-  }
-}
-
-export class UsersUtil {
-  public static async getUserFromUsername(username: string) {
-    try {
-      if (username) {
-        const service = new UsersService();
-        const users = await service.customQuery(`username='${username}'`);
-        if (users && users.length > 0) {
-          return users[0];
-        }
-      }
-    } catch (error) {
-      console.error(`Error while getUserFromUsername() => ${error.message}`);
-    }
-    return null;
-  }
-
-  public static async getUserByEmail(email: string) {
-    try {
-      if (email) {
-        const service = new UsersService();
-        const users = await service.customQuery(`email='${email}'`);
-        if (users && users.length > 0) {
-          return users[0];
-        }
-      }
-    } catch (error) {
-      console.error(`Error while getUserByEmail() => ${error.message}`);
-      return null;
     }
   }
 }

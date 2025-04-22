@@ -1,8 +1,9 @@
 import { Express } from 'express';
-import { RoleController, RolesUtil } from './roles_controller';
+import { RoleController } from './roles_controller';
 import { validate } from '../../middlewares/validator';
 import { body, param } from 'express-validator';
 import { authorize } from '../../middlewares/auth_middleware';
+import { RolesUtil } from './roles_util';
 
 const validRoleInput = [
   body('name').trim().notEmpty().withMessage('name is required'),
