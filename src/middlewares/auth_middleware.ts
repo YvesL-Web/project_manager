@@ -58,12 +58,12 @@ export const authorize = async (req: Request, res: Response, next: NextFunction)
     // Verify the access token
     const decodedToken = jwt.verify(access_token, SERVER_CONST.JWTSECRET);
     req.user = {};
-    req.user.user_id = decodedToken['user_id'] ?? '';
     req.user.username = decodedToken['username'] ?? '';
     req.user.email = decodedToken['email'] ?? '';
 
     if (req.user.username) {
       const user: Users = await UsersUtil.getUserFromUsername(req.user.username);
+      req.user.user_id = user.user_id;
       const rights = await RolesUtil.getAllRightsFromRoles([user.role_id]);
       req.user.rights = rights;
     }
@@ -83,7 +83,6 @@ export const authorize = async (req: Request, res: Response, next: NextFunction)
       // Générer un nouveau access_token
       const newAccessToken = jwt.sign(
         {
-          user_id: decodedRefreshToken['user_id'],
           username: decodedRefreshToken['username'],
           email: decodedRefreshToken['email']
         },
@@ -106,6 +105,7 @@ export const authorize = async (req: Request, res: Response, next: NextFunction)
       // Charger les droits de l'utilisateur
       if (req.user.username) {
         const user: Users = await UsersUtil.getUserFromUsername(req.user.username);
+        req.user.user_id = user.user_id;
         const rights = await RolesUtil.getAllRightsFromRoles([user.role_id]);
         req.user.rights = rights;
       }

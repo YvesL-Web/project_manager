@@ -53,7 +53,7 @@ export const sendPasswordResetEmail = async (username: string, email: string, re
     resetLink: resetLink
   };
   try {
-    const status = await transport.sendMail({
+    await transport.sendMail({
       from: sender,
       to: recipient,
       subject: 'Reset your password',

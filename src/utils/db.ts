@@ -6,6 +6,7 @@ import { Users } from '../components/users/users_entity';
 import { Projects } from '../components/projects/projects_entity';
 import { Tasks } from '../components/tasks/tasks_entity';
 import { Comments } from '../components/comments/comments_entity';
+import { Files } from '../components/files/files_entity';
 
 export class DatabaseUtil {
   private server_config: IServerConfig = config;
@@ -52,9 +53,9 @@ export class DatabaseUtil {
           username: db_config.username,
           password: db_config.password,
           database: db_config.dbname,
-          entities: [Roles, Users, Projects, Tasks, Comments],
+          entities: [Roles, Users, Projects, Tasks, Comments, Files],
           synchronize: true,
-          logging: false,
+          logging: false, // true
           poolSize: 10
         });
         await AppSource.initialize();

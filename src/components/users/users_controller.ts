@@ -10,6 +10,7 @@ import { IServerConfig } from '../../utils/config';
 import { sendPasswordResetEmail } from '../../mailtrap/emails';
 import { UsersUtil } from './users_util';
 import { RolesUtil } from '../roles/roles_util';
+import { CacheUtil } from '../../utils/cache_util';
 
 const conf: IServerConfig = config;
 
@@ -75,13 +76,22 @@ export class UserController extends BaseController {
       res.status(403).json({ statusCode: 403, status: 'error', message: 'Unauthorized' });
       return;
     }
-    const service = new UsersService();
-    const result = await service.findOne(req.params.id);
-    if (result.statusCode === 200) {
-      delete result.data.password;
+    // check if user is in cache
+    const userFromCache = await CacheUtil.get('User', req.params.id);
+    if (userFromCache) {
+      res.status(200).json({ statusCode: 200, status: 'success', data: userFromCache });
+      return;
+    } else {
+      const service = new UsersService();
+      const result = await service.findOne(req.params.id);
+      if (result.statusCode === 200) {
+        delete result.data.password;
+        // set user in cache
+        CacheUtil.set('User', req.params.id, result.data);
+      }
+      res.status(result.statusCode).json(result);
+      return;
     }
-    res.status(result.statusCode).json(result);
-    return;
   }
 
   public async updateHandler(req: Request, res: Response): Promise<void> {
@@ -112,6 +122,8 @@ export class UserController extends BaseController {
     }
     const service = new UsersService();
     const result = await service.delete(req.params.id);
+    // remove user from cache
+    CacheUtil.remove('User', req.params.id);
     res.status(result.statusCode).json(result);
   }
 

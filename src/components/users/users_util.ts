@@ -4,6 +4,7 @@
  * and perform common operations such as retrieving users by username or email, validating user IDs, and fetching usernames by ID.
  */
 
+import { CacheUtil } from '../../utils/cache_util';
 import { UsersService } from './users_service';
 
 /**
@@ -83,5 +84,21 @@ export class UsersUtil {
       return usernames;
     }
     return [];
+  }
+
+  public static async putAllUsersInCache() {
+    const service = new UsersService();
+    const result = await service.findAll({});
+    if (result.statusCode === 200) {
+      const users = result.data;
+      users.forEach((u) => {
+        delete u.password;
+        CacheUtil.set('User', u.user_id, u);
+      });
+      console.log(`All users have been cached`);
+    } else {
+      console.log('Error while putting all users in cache: ', result.message);
+      console.log(result);
+    }
   }
 }

@@ -34,3 +34,6 @@ finished_userController.ts
 # Temporary files
 *.tmp
 *.temp
+
+# specific folder
+attachedFiles/

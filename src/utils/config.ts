@@ -18,4 +18,5 @@ export interface IServerConfig {
     email: string;
     password: string;
   };
+  attached_files_path?: string;
 }

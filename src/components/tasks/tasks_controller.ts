@@ -32,15 +32,40 @@ export class TaskController extends BaseController {
     }
   }
   public async getAllHandler(req: Request, res: Response): Promise<void> {
-    // getAllHandler
+    if (!hasPermission(req.user.rights, 'get_all_tasks')) {
+      res.status(403).json({ statusCode: 403, status: 'error', message: 'Unauthorized' });
+      return;
+    }
+    const service = new TasksService();
+    const result = await service.findAll(req.query);
+    res.status(result.statusCode).json(result);
   }
   public async getOneHandler(req: Request, res: Response): Promise<void> {
-    // getDetailsHandler
+    if (!hasPermission(req.user.rights, 'get_details_task')) {
+      res.status(403).json({ statusCode: 403, status: 'error', message: 'Unauthorized' });
+      return;
+    }
+    const service = new TasksService();
+    const result = await service.findOne(req.params.id);
+    res.status(result.statusCode).json(result);
   }
   public async updateHandler(req: Request, res: Response): Promise<void> {
-    // updateHandler
+    if (!hasPermission(req.user.rights, 'edit_task')) {
+      res.status(403).json({ statusCode: 403, status: 'error', message: 'Unauthorized' });
+      return;
+    }
+    const task = req.body;
+    const service = new TasksService();
+    const result = await service.update(req.params.id, task);
+    res.status(result.statusCode).json(result);
   }
   public async deleteHandler(req: Request, res: Response): Promise<void> {
-    // deleteHandler
+    if (!hasPermission(req.user.rights, 'delete_task')) {
+      res.status(403).json({ statusCode: 403, status: 'error', message: 'Unauthorized' });
+      return;
+    }
+    const service = new TasksService();
+    const result = await service.delete(req.params.id);
+    res.status(result.statusCode).json(result);
   }
 }
