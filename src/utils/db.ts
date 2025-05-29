@@ -40,10 +40,10 @@ export class DatabaseUtil {
    * Establishes a database connection or returns the existing connection if available.
    * @returns The database connection instance.
    */
-  public async connectDatabase() {
+  public async connectDatabase(): Promise<DataSource> {
     try {
       if (DatabaseUtil.connection) {
-        return DatabaseUtil.connection;
+        return Promise.resolve(DatabaseUtil.connection);
       } else {
         const db_config = this.server_config.db_config;
         const AppSource = new DataSource({

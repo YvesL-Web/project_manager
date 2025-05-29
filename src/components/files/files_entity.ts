@@ -7,7 +7,7 @@ export class Files {
   @PrimaryGeneratedColumn('uuid')
   file_id: string;
 
-  @Column({ length: 30, nullable: false, unique: true })
+  @Column({ length: 255, nullable: false, unique: true })
   file_name: string;
 
   @Column({ length: 30 })

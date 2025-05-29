@@ -4,6 +4,7 @@ import { TasksService } from './tasks_service';
 import { UsersUtil } from '../users/users_util';
 import { ProjectsUtil } from '../projects/projects_util';
 import { BaseController } from '../../utils/base_controller';
+import { TasksUtil } from './tasks_util';
 
 export class TaskController extends BaseController {
   public async addHandler(req: Request, res: Response): Promise<void> {
@@ -14,6 +15,9 @@ export class TaskController extends BaseController {
     try {
       const service = new TasksService();
       const task = req.body;
+      // Get the project
+      const project = await ProjectsUtil.getProjectByProjectId(task.project_id);
+      // check if the provided project_id is valid
       const isValidProject = await ProjectsUtil.checkValidProjectIds([task.project_id]);
       if (!isValidProject) {
         res.status(400).json({ statusCode: 400, status: 'error', message: 'Invalid project_id' });
@@ -26,6 +30,9 @@ export class TaskController extends BaseController {
       }
       const createTask = await service.create(task);
       res.status(createTask.statusCode).json(createTask);
+
+      // Notify the users of the project that a new task has been created
+      await TasksUtil.notifyUsers(project, task, 'add');
     } catch (error) {
       console.error(`Error while addUser => ${error.message}`);
       res.status(500).json({ statusCode: 500, status: 'error', message: 'Internal server error' });

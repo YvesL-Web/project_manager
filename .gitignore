@@ -27,6 +27,8 @@ Thumbs.db
 server_config.json
 other_main.ts
 finished_userController.ts
+tempo.ts
+
 
 # prettier conf
 .prettierrc

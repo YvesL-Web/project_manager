@@ -7,25 +7,26 @@ import { Routes } from './routes';
 export class ExpressServer {
   private static server = null;
   public server_config: IServerConfig = config;
+  public app;
   constructor() {
     const port = this.server_config.port ?? 3000;
     // Initialize express app
-    const app = express();
-    app.use(express.urlencoded({ extended: false }));
+    this.app = express();
+    this.app.use(express.urlencoded({ extended: false }));
 
-    app.use(express.json());
-    app.use(cookieParser());
+    this.app.use(express.json());
+    this.app.use(cookieParser());
 
-    app.get('/ping', (req, res) => {
+    this.app.get('/ping', (req, res) => {
       res.send('pong');
     });
 
-    const routes = new Routes(app);
+    const routes = new Routes(this.app);
     if (routes) {
       console.log('Server Routes started for server');
     }
 
-    ExpressServer.server = app.listen(port, () => {
+    ExpressServer.server = this.app.listen(port, () => {
       console.log(`Server is running on port ${port} with pid = ${process.pid}`);
     });
   }

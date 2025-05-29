@@ -4,6 +4,7 @@ import { DatabaseUtil } from './utils/db';
 import { DDLUtil } from './utils/ddl_util';
 import { CacheUtil } from './utils/cache_util';
 import { UsersUtil } from './components/users/users_util';
+import { QueueWorker } from './workers/queue_worker';
 
 // connect the express server
 const server = new ExpressServer();
@@ -13,6 +14,9 @@ new DatabaseUtil();
 
 // initialize cache
 new CacheUtil();
+
+// start the email queue worker
+QueueWorker.startWorker();
 
 process.on('uncaughtException', (error: Error) => {
   console.error(`Uncaught exception in worker process ${process.pid}:`, error);

@@ -86,6 +86,16 @@ export class UsersUtil {
     return [];
   }
 
+  public static async getUserById(user_id: string) {
+    const service = new UsersService();
+    const queryResult = await service.findOne(user_id);
+    if (queryResult.statusCode === 200) {
+      const user = queryResult.data;
+      return user;
+    }
+    return null;
+  }
+
   public static async putAllUsersInCache() {
     const service = new UsersService();
     const result = await service.findAll({});

@@ -1,5 +1,5 @@
 import { Roles } from '../components/roles/roles_entity';
-import { RolesUtil } from '../components/roles/roles_controller';
+import { RolesUtil } from '../components/roles/roles_util';
 import { v4 } from 'uuid';
 import { RolesService } from '../components/roles/roles_service';
 import { UsersService } from '../components/users/users_service';
